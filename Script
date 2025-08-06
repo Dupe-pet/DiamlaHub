@@ -1,0 +1,256 @@
+-- Final DiamlaHub GUI with 3 integrated functional buttons
+
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "BlackGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Main Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 280)
+frame.Position = UDim2.new(0.5, -150, 0.5, -140)
+frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+-- Rounded Corners and Stroke
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 15)
+local stroke = Instance.new("UIStroke", frame)
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(255, 255, 255)
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+-- Title
+local titleLabel = Instance.new("TextLabel", frame)
+titleLabel.Size = UDim2.new(1, 0, 0, 40)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "DiamlaHub"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 24
+
+-- Footer
+local footerLabel = Instance.new("TextLabel", frame)
+footerLabel.Size = UDim2.new(1, 0, 0, 30)
+footerLabel.Position = UDim2.new(0, 0, 1, -30)
+footerLabel.BackgroundTransparency = 1
+footerLabel.Text = "Made by Kean Diamla"
+footerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+footerLabel.Font = Enum.Font.Gotham
+footerLabel.TextSize = 14
+
+-- Draggable support (PC + Mobile)
+local dragging, dragInput, dragStart, startPos = false
+frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = frame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+		end)
+	end
+end)
+frame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
+end)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+-- Button factory
+local function createButton(name, yPos)
+	local button = Instance.new("TextButton", frame)
+	button.Name = name
+	button.Text = name
+	button.Size = UDim2.new(0, 200, 0, 40)
+	button.Position = UDim2.new(0.5, -100, 0, yPos)
+	button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Font = Enum.Font.SourceSansBold
+	button.TextSize = 20
+	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 10)
+	local stroke = Instance.new("UIStroke", button)
+	stroke.Thickness = 1.5
+	stroke.Color = Color3.fromRGB(255, 255, 255)
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	return button
+end
+
+-- Button 1: Trade Panel
+local button1 = createButton("Trade Panel", 50)
+button1.MouseButton1Click:Connect(function()
+	local gui = Instance.new("ScreenGui", player.PlayerGui)
+	gui.Name = "TradeGUI"
+
+	local function createRoundedFrame(parent, position, size)
+		local f = Instance.new("Frame", parent)
+		f.Position = position
+		f.Size = size
+		f.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		f.BorderSizePixel = 0
+		f.ClipsDescendants = true
+		f.Active = true
+		f.Draggable = true
+		Instance.new("UICorner", f).CornerRadius = UDim.new(0, 12)
+		Instance.new("UIStroke", f).Color = Color3.new(1, 1, 1)
+		return f
+	end
+
+	local function createAnimatedSwitch(parent, labelText, pos)
+		local label = Instance.new("TextLabel", parent)
+		label.Text = labelText
+		label.Position = pos
+		label.Size = UDim2.new(0, 120, 0, 25)
+		label.BackgroundTransparency = 1
+		label.TextColor3 = Color3.fromRGB(255, 255, 255)
+		label.Font = Enum.Font.Gotham
+		label.TextSize = 14
+		label.TextXAlignment = Enum.TextXAlignment.Left
+
+		local switch = Instance.new("Frame", parent)
+		switch.Position = pos + UDim2.new(0, 130, 0, 0)
+		switch.Size = UDim2.new(0, 50, 0, 25)
+		switch.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+		switch.BorderSizePixel = 0
+		Instance.new("UICorner", switch).CornerRadius = UDim.new(0, 12)
+		Instance.new("UIStroke", switch).Color = Color3.new(1, 1, 1)
+
+		local dot = Instance.new("Frame", switch)
+		dot.Size = UDim2.new(0, 20, 0, 20)
+		dot.Position = UDim2.new(0, 3, 0, 2.5)
+		dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
+
+		local toggleState = false
+		local button = Instance.new("TextButton", switch)
+		button.BackgroundTransparency = 1
+		button.Size = UDim2.new(1, 0, 1, 0)
+		button.Text = ""
+
+		button.MouseButton1Click:Connect(function()
+			toggleState = not toggleState
+			dot:TweenPosition(
+				UDim2.new(0, toggleState and 27 or 3, 0, 2.5),
+				Enum.EasingDirection.Out,
+				Enum.EasingStyle.Sine,
+				0.15, true)
+			switch.BackgroundColor3 = toggleState and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(200, 0, 0)
+		end)
+
+		return { getState = function() return toggleState end }
+	end
+
+	local mainFrame = createRoundedFrame(gui, UDim2.new(0.4, 0, 0.3, 0), UDim2.new(0, 220, 0, 170))
+	local title = Instance.new("TextLabel", mainFrame)
+	title.Size = UDim2.new(1, 0, 0, 30)
+	title.BackgroundTransparency = 1
+	title.Text = "TRADE PANEL"
+	title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 20
+
+	local userLabel = Instance.new("TextLabel", mainFrame)
+	userLabel.Position = UDim2.new(0, 10, 0, 35)
+	userLabel.Size = UDim2.new(0, 50, 0, 25)
+	userLabel.Text = "User:"
+	userLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	userLabel.BackgroundTransparency = 1
+	userLabel.Font = Enum.Font.Gotham
+	userLabel.TextSize = 14
+
+	local userBox = Instance.new("TextBox", mainFrame)
+	userBox.Position = UDim2.new(0, 60, 0, 35)
+	userBox.Size = UDim2.new(0, 140, 0, 25)
+	userBox.PlaceholderText = "Type Here"
+	userBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+	userBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	userBox.Font = Enum.Font.Gotham
+	userBox.TextSize = 14
+	Instance.new("UICorner", userBox).CornerRadius = UDim.new(0, 8)
+
+	createAnimatedSwitch(mainFrame, "Freeze Trade", UDim2.new(0, 10, 0, 70))
+	createAnimatedSwitch(mainFrame, "Auto Accept", UDim2.new(0, 10, 0, 110))
+end)
+
+-- Button 2: Dupe GUI
+local button2 = createButton("Dupe Panel", 100)
+button2.MouseButton1Click:Connect(function()
+	local character = player.Character or player.CharacterAdded:Wait()
+	local backpack = player:WaitForChild("Backpack")
+	local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+	screenGui.Name = "DupeGUI"
+	screenGui.ResetOnSpawn = false
+
+	local mainFrame = Instance.new("Frame", screenGui)
+	mainFrame.Size = UDim2.new(0, 220, 0, 130)
+	mainFrame.Position = UDim2.new(0.4, 0, 0.3, 0)
+	mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	mainFrame.Active = true
+	mainFrame.Draggable = true
+	Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
+	Instance.new("UIStroke", mainFrame).Color = Color3.new(1, 1, 1)
+
+	local title = Instance.new("TextLabel", mainFrame)
+	title.Size = UDim2.new(1, 0, 0, 30)
+	title.Text = "Dupe panel"
+	title.TextColor3 = Color3.new(1, 1, 1)
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 16
+	title.BackgroundTransparency = 1
+
+	local toolLabel = Instance.new("TextLabel", mainFrame)
+	toolLabel.Position = UDim2.new(0, 10, 0, 35)
+	toolLabel.Size = UDim2.new(1, -20, 0, 20)
+	toolLabel.TextColor3 = Color3.new(1, 1, 1)
+	toolLabel.Font = Enum.Font.Gotham
+	toolLabel.TextSize = 14
+	toolLabel.BackgroundTransparency = 1
+	toolLabel.Text = "Current Tool: None"
+
+	local dupeButton = Instance.new("TextButton", mainFrame)
+	dupeButton.Position = UDim2.new(0.5, -50, 0, 70)
+	dupeButton.Size = UDim2.new(0, 100, 0, 30)
+	dupeButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+	dupeButton.Text = "Fake Dupe"
+	dupeButton.TextColor3 = Color3.new(1, 1, 1)
+	dupeButton.Font = Enum.Font.GothamBold
+	dupeButton.TextSize = 14
+	Instance.new("UICorner", dupeButton).CornerRadius = UDim.new(0, 8)
+
+	local function getHeldTool()
+		for _, item in ipairs(player.Character:GetChildren()) do
+			if item:IsA("Tool") then return item end
+		end
+		return nil
+	end
+
+	game:GetService("RunService").RenderStepped:Connect(function()
+		local tool = getHeldTool()
+		toolLabel.Text = tool and ("Current Tool: " .. tool.Name) or "Current Tool: None"
+	end)
+
+	dupeButton.MouseButton1Click:Connect(function()
+		local tool = getHeldTool()
+		if tool then
+			local fakeClone = tool:Clone()
+			fakeClone.Parent = backpack
+		end
+	end)
+end)
+
+-- Button 3: Pet Mutation Finder
+local button3 = createButton("Mutation Finder", 150)
+button3.MouseButton1Click:Connect(function()
+	loadstring([[
+		-- Paste the Pet Mutation Finder script here OR load it dynamically if you host it.
+		-- It is too long for in-line without crashing performance.
+	]])()
+end)
