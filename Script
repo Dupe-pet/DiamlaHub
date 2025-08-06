@@ -249,8 +249,5 @@ end)
 -- Button 3: Pet Mutation Finder
 local button3 = createButton("Mutation Finder", 150)
 button3.MouseButton1Click:Connect(function()
-	loadstring([[
-		-- Paste the Pet Mutation Finder script here OR load it dynamically if you host it.
-		-- It is too long for in-line without crashing performance.
-	]])()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/Egg/refs/heads/main/Finder"))()
 end)
