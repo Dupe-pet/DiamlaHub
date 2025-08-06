@@ -2,65 +2,50 @@
 
 local player = game.Players.LocalPlayer
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "BlackGui"
+screenGui.Name = "DiamlaHubGUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
 -- Main Frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 330)
-frame.Position = UDim2.new(0.5, -150, 0.5, -165)
+frame.Size = UDim2.new(0, 300, 0, 310)
+frame.Position = UDim2.new(0.5, -150, 0.5, -155)
 frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
 
--- Rounded Corners
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 15)
-corner.Parent = frame
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 15)
 
--- White Outline
-local stroke = Instance.new("UIStroke")
+local stroke = Instance.new("UIStroke", frame)
 stroke.Thickness = 2
 stroke.Color = Color3.fromRGB(255, 255, 255)
 stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-stroke.Parent = frame
 
--- Title Label
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, 0, 0, 40)
-titleLabel.Position = UDim2.new(0, 0, 0, 0)
-titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "DiamlaHub"
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextSize = 24
-titleLabel.Parent = frame
+-- Title
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = "DiamlaHub"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 24
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Footer Label
-local footerLabel = Instance.new("TextLabel")
-footerLabel.Size = UDim2.new(1, 0, 0, 30)
-footerLabel.Position = UDim2.new(0, 0, 1, -30)
-footerLabel.BackgroundTransparency = 1
-footerLabel.Text = "Made by Kean Diamla"
-footerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-footerLabel.Font = Enum.Font.Gotham
-footerLabel.TextSize = 14
-footerLabel.Parent = frame
+-- Footer
+local footer = Instance.new("TextLabel", frame)
+footer.Size = UDim2.new(1, 0, 0, 25)
+footer.Position = UDim2.new(0, 0, 1, -25)
+footer.BackgroundTransparency = 1
+footer.Text = "Made by Kean Diamla"
+footer.Font = Enum.Font.Gotham
+footer.TextSize = 14
+footer.TextColor3 = Color3.fromRGB(255, 255, 255)
 
--- Draggable Support (PC + Mobile)
-local dragging = false
-local dragInput, dragStart, startPos
-
-local function update(input)
-	local delta = input.Position - dragStart
-	frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-							   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
+-- Draggable (Mobile + PC)
+local dragging, dragStart, startPos
+local userInput = game:GetService("UserInputService")
 
 frame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or 
-	   input.UserInputType == Enum.UserInputType.Touch then
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
 		startPos = frame.Position
@@ -73,75 +58,60 @@ frame.InputBegan:Connect(function(input)
 	end
 end)
 
-frame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement or 
-	   input.UserInputType == Enum.UserInputType.Touch then
-		dragInput = input
-	end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		update(input)
+userInput.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 	end
 end)
 
 -- Button creator
-local function createButton(name, positionY, code)
-	local button = Instance.new("TextButton")
-	button.Name = name
-	button.Text = name
-	button.Size = UDim2.new(0, 200, 0, 40)
-	button.Position = UDim2.new(0.5, -100, 0, positionY)
-	button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	button.TextColor3 = Color3.fromRGB(255, 255, 255)
-	button.Font = Enum.Font.SourceSansBold
-	button.TextSize = 20
-	button.Parent = frame
+local function createButton(text, yOffset, scriptCode)
+	local btn = Instance.new("TextButton", frame)
+	btn.Size = UDim2.new(0, 200, 0, 40)
+	btn.Position = UDim2.new(0.5, -100, 0, yOffset)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.SourceSansBold
+	btn.TextSize = 20
 
-	local btnCorner = Instance.new("UICorner")
-	btnCorner.CornerRadius = UDim.new(0, 10)
-	btnCorner.Parent = button
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
 
-	local btnStroke = Instance.new("UIStroke")
+	local btnStroke = Instance.new("UIStroke", btn)
 	btnStroke.Thickness = 1.5
 	btnStroke.Color = Color3.fromRGB(255, 255, 255)
 	btnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	btnStroke.Parent = button
 
-	-- Loadstring execution on click
-	button.MouseButton1Click:Connect(function()
+	btn.MouseButton1Click:Connect(function()
 		local success, err = pcall(function()
-			loadstring(code)()
+			loadstring(scriptCode)()
 		end)
 		if not success then
-			warn("Loadstring error in " .. name .. ": " .. err)
+			warn("Error loading script: " .. err)
 		end
 	end)
-
-	return button
 end
 
--- Your custom scripts
-local script1 = [[
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/Speed-hub/refs/heads/main/Speedhub"))()
-]]
+-- Button Scripts
+local scripts = {
+	[1] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/SpawnerRAW/refs/heads/main/Free-script"))()',
+	[2] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/DiamlaHub/refs/heads/main/Script"))()',
+	[3] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/Gui/refs/heads/main/My-gui"))()',
+	[4] = [[
+		local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
+		Spawner.Load()
+	]]
+}
 
-local script2 = [[
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/SpawnerRAW/refs/heads/main/Free-script"))()
-]]
+-- Create Buttons
+local buttonNames = {
+	"",
+	"",
+	"",
+	""
+}
 
-local script3 = [[
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/Gui/refs/heads/main/My-gui"))()
-]]
-
-local script4 = [[
-local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
-Spawner.Load()
-]]
-
--- Create 4 buttons
-createButton("Button 1", 50, script1)
-createButton("Button 2", 100, script2)
-createButton("Button 3", 150, script3)
-createButton("Button 4", 200, script4)
+for i, code in ipairs(scripts) do
+	createButton(buttonNames[i], 40 + (i - 1) * 50, code)
+end
