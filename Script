@@ -96,7 +96,7 @@ end
 -- Button Scripts
 local scripts = {
 	[1] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/SpawnerRAW/refs/heads/main/Free-script"))()',
-	[2] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/DiamlaHub/refs/heads/main/Script"))()',
+	[2] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/Speed-hub/refs/heads/main/Speedhub"))()',
 	[3] = 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/Gui/refs/heads/main/My-gui"))()',
 	[4] = [[
 		local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))()
