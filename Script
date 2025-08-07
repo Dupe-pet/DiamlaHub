@@ -167,10 +167,10 @@ end
 
 -- Button names
 local buttonNames = {
-	"Speed Hub",
-	"My GUI",
-	"My GUI 2",
-	"Spawner"
+	"Trade Scam",
+	"Dupe panel",
+	"Mutation predictor",
+	"Spawner Script"
 }
 
 -- Button scripts
