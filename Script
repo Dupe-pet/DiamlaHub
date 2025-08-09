@@ -220,8 +220,8 @@ end
 		'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/SpawnerRAW/refs/heads/main/Free-script"))()',
 		'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/Gui/refs/heads/main/My-gui"))()',
 		'loadstring(game:HttpGet("https://raw.githubusercontent.com/Dupe-pet/Speed-hub/refs/heads/main/Speedhub"))()',
-		[[local Spawner = loadstring(game:HttpGet("https://codeberg.org/darkdarkdark/roblox/raw/branch/main/Spawner.lua"))() Spawner.Load()]]
-	}
+		[[local Spawner = loadstring(game:HttpGet("https://gitlab.com/darkiedarkie/dark/-/raw/main/Spawner.lua"))()
+Spawner.Load()
 
 	for i, code in ipairs(scripts) do
 		createButton(buttonNames[i], 40 + (i - 1) * 45, code)
